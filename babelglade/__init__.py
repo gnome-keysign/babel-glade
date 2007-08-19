@@ -15,7 +15,9 @@
 
 from xml.parsers import expat
 
+
 class GladeParser(object):
+
     def __init__(self, source):
         self.source = source
 
@@ -104,12 +106,8 @@ class GladeParser(object):
     def _getpos_unknown(self):
         return (-1, -1)
 
+
 def extract_glade(fileobj, keywords, comment_tags, options):
     parser = GladeParser(fileobj)
-    def get_messages():
-        for message, comments, lineno in parser.parse():
-            if comment_tags:
-                yield (lineno, None, message, comments)
-            else:
-                yield (lineno, None, message)
-    return get_messages()
+    for message, comments, lineno in parser.parse():
+        yield (lineno, None, message, comment_tags and comments or [])
