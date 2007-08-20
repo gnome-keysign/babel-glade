@@ -28,6 +28,7 @@ setup(
     url = 'http://babel.edgewall.org/wiki/BabelGladeExtractor',
     keywords = ['PyGTK', 'Glade', 'gettext', 'Babel', 'I18n', 'L10n'],
     install_requires = ['Babel'],
+    test_suite = "babelglade.tests.suite",
     entry_points = """
     [babel.extractors]
     glade = babelglade:extract_glade
