@@ -15,6 +15,8 @@
 
 from xml.parsers import expat
 
+__all__ = ['extract_glade']
+
 
 class GladeParser(object):
 

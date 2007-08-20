@@ -16,7 +16,8 @@
 import unittest
 from StringIO import StringIO
 from babel.messages.extract import DEFAULT_KEYWORDS
-from babelglade import extract_glade
+from babelglade.extract import extract_glade
+
 
 class GladeExtractTests(unittest.TestCase):
 
@@ -55,6 +56,7 @@ class GladeExtractTests(unittest.TestCase):
   </widget>
 </glade-interface>
 """)
+
     def test_yield_four_item_tuples_with_comments(self):
         extracted = extract_glade(self.glade_fileobj, DEFAULT_KEYWORDS, True, {})
         print extracted
