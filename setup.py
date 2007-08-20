@@ -31,7 +31,7 @@ setup(
     test_suite = "babelglade.tests.suite",
     entry_points = """
     [babel.extractors]
-    glade = babelglade:extract_glade
+    glade = babelglade.extract:extract_glade
     """,
     packages = ['babelglade']
 
