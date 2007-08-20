@@ -27,15 +27,15 @@ class GladeExtractTests(unittest.TestCase):
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
 <glade-interface>
   <widget class="GtkWindow" id="window1">
-    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</prope
+    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
     <child>
       <widget class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
-        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</p
+        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
         <child>
           <widget class="GtkLabel" id="label1">
             <property name="visible">True</property>
-            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MAS
+            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
             <property name="label" translatable="yes" comments="A label with translator comments">This is a Label</property>
           </widget>
         </child>
@@ -44,7 +44,7 @@ class GladeExtractTests(unittest.TestCase):
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MAS
+            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
             <property name="label" translatable="yes" comments="This button also includes translator comments">A button</property>
           </widget>
           <packing>
@@ -59,7 +59,13 @@ class GladeExtractTests(unittest.TestCase):
 
     def test_yield_four_item_tuples_with_comments(self):
         extracted = extract_glade(self.glade_fileobj, DEFAULT_KEYWORDS, True, {})
-        print extracted
+        for entry in list(extracted):
+            assert len(entry) == 4, "extract_galde did not return a 4 tupple item"
+
+    def test_yield_four_item_tuples_without_comments(self):
+        extracted = extract_glade(self.glade_fileobj, DEFAULT_KEYWORDS, False, {})
+        for entry in list(extracted):
+            assert len(entry) == 4, "extract_galde did not return a 4 tupple item"
 
 
 def suite():

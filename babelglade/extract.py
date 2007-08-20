@@ -17,6 +17,8 @@ from xml.parsers import expat
 
 __all__ = ['extract_glade']
 
+class ParseError(Exception):
+    pass
 
 class GladeParser(object):
 
@@ -61,8 +63,7 @@ class GladeParser(object):
                 if done:
                     break
         except expat.ExpatError, e:
-            msg = str(e)
-            raise ParseError(msg, self.filename, e.lineno, e.offset)
+            raise ParseError(str(e))
 
     def _handle_start(self, tag, attrib):
         if u'translatable' in attrib:
