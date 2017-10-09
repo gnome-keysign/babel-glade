@@ -12,6 +12,7 @@
 #
 # Please view LICENSE for additional licensing information.
 # =============================================================================
+from __future__ import unicode_literals
 
 from xml.parsers import expat
 
@@ -25,9 +26,8 @@ class GladeParser(object):
     def __init__(self, source):
         self.source = source
 
-        parser = expat.ParserCreate()
+        parser = expat.ParserCreate("utf-8")
         parser.buffer_text = True
-        parser.returns_unicode = True
         parser.ordered_attributes = True
         parser.StartElementHandler = self._handle_start
         parser.EndElementHandler = self._handle_end
@@ -48,29 +48,28 @@ class GladeParser(object):
             done = False
             while not done and len(self._queue) == 0:
                 data = self.source.read(bufsize)
-                if data == '': # end of data
+                if data == b'':  # end of data
                     if hasattr(self, 'expat'):
                         self.expat.Parse('', True)
                         del self.expat # get rid of circular references
                     done = True
                 else:
-                    if isinstance(data, unicode):
-                        data = data.encode('utf-8')
                     self.expat.Parse(data, False)
                 for event in self._queue:
                     yield event
                 self._queue = []
                 if done:
                     break
-        except expat.ExpatError, e:
+
+        except expat.ExpatError as e:
             raise ParseError(str(e))
 
     def _handle_start(self, tag, attrib):
-        if u'translatable' in attrib:
-            if attrib[attrib.index(u'translatable')+1] == u'yes':
+        if 'translatable' in attrib:
+            if attrib[attrib.index('translatable')+1] == 'yes':
                 self._translate = True
-                if u'comments' in attrib:
-                    self._comments.append(attrib[attrib.index(u'comments')+1])
+                if 'comments' in attrib:
+                    self._comments.append(attrib[attrib.index('comments')+1])
 
     def _handle_end(self, tag):
         if self._translate is True:
@@ -82,7 +81,7 @@ class GladeParser(object):
 
     def _handle_data(self, text):
         if self._translate:
-            if not text.startswith(u'gtk-'):
+            if not text.startswith('gtk-'):
                 self._data.append(text)
             else:
                 self._translate = False
@@ -92,7 +91,7 @@ class GladeParser(object):
     def _enqueue(self, kind, data=None, comments=None, pos=None):
         if pos is None:
             pos = self._getpos()
-        if kind in (u'property', 'property'):
+        if kind == 'property':
             if '\n' in data:
                 lines = data.splitlines()
                 lineno = pos[0] - len(lines) + 1
