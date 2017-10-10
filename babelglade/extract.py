@@ -91,16 +91,16 @@ class GladeParser(object):
     def _enqueue(self, kind, data=None, comments=None, pos=None):
         if pos is None:
             pos = self._getpos()
-        if kind == 'property':
-            if '\n' in data:
-                lines = data.splitlines()
-                lineno = pos[0] - len(lines) + 1
-                offset = -1
-            else:
-                lineno = pos[0]
-                offset = pos[1] - len(data)
-            pos = (lineno, offset)
-            self._queue.append((data, comments, pos[0]))
+
+        if '\n' in data:
+            lines = data.splitlines()
+            lineno = pos[0] - len(lines) + 1
+            offset = -1
+        else:
+            lineno = pos[0]
+            offset = pos[1] - len(data)
+        pos = (lineno, offset)
+        self._queue.append((data, comments, pos[0]))
 
     def _getpos(self):
         return (self.expat.CurrentLineNumber,
