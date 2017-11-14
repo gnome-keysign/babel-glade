@@ -27,7 +27,7 @@ setup(
     description = 'Babel Glade XML files translatable strings extractor',
     url = 'http://babel.edgewall.org/wiki/BabelGladeExtractor',
     keywords = ['PyGTK', 'Glade', 'gettext', 'Babel', 'I18n', 'L10n'],
-    install_requires = ['Babel'],
+    install_requires = ['Babel', 'lxml'],
     test_suite = "babelglade.tests.suite",
     entry_points = """
     [babel.extractors]
