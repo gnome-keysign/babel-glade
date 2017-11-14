@@ -32,6 +32,9 @@ setup(
     entry_points = """
     [babel.extractors]
     glade = babelglade.extract:extract_glade
+
+    [distutils.commands]
+    compile_catalog = babel.messages.frontend:compile_catalog
     """,
     packages = ['babelglade']
 
