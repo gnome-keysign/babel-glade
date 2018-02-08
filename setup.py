@@ -27,11 +27,14 @@ setup(
     description = 'Babel Glade XML files translatable strings extractor',
     url = 'https://github.com/GNOME-Keysign/babel-glade',
     keywords = ['PyGTK', 'Glade', 'gettext', 'Babel', 'I18n', 'L10n'],
-    install_requires = ['Babel'],
+    install_requires = ['Babel', 'lxml'],
     test_suite = "babelglade.tests.suite",
     entry_points = """
     [babel.extractors]
     glade = babelglade.extract:extract_glade
+
+    [distutils.commands]
+    compile_catalog = babel.messages.frontend:compile_catalog
     """,
     packages = ['babelglade']
 

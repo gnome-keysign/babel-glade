@@ -14,102 +14,21 @@
 # =============================================================================
 from __future__ import unicode_literals
 
-from xml.parsers import expat
-
-__all__ = ['extract_glade']
-
-class ParseError(Exception):
-    pass
-
-class GladeParser(object):
-
-    def __init__(self, source):
-        self.source = source
-
-        parser = expat.ParserCreate("utf-8")
-        parser.buffer_text = True
-        parser.ordered_attributes = True
-        parser.StartElementHandler = self._handle_start
-        parser.EndElementHandler = self._handle_end
-        parser.CharacterDataHandler = self._handle_data
-
-        if not hasattr(parser, 'CurrentLineNumber'):
-            self._getpos = self._getpos_unknown
-
-        self.expat = parser
-        self._queue = []
-        self._comments = []
-        self._translate = False
-        self._data = []
-
-    def parse(self):
-        try:
-            bufsize = 4 * 1024 # 4K
-            done = False
-            while not done and len(self._queue) == 0:
-                data = self.source.read(bufsize)
-                if data == b'':  # end of data
-                    if hasattr(self, 'expat'):
-                        self.expat.Parse('', True)
-                        del self.expat # get rid of circular references
-                    done = True
-                else:
-                    self.expat.Parse(data, False)
-                for event in self._queue:
-                    yield event
-                self._queue = []
-                if done:
-                    break
-
-        except expat.ExpatError as e:
-            raise ParseError(str(e))
-
-    def _handle_start(self, tag, attrib):
-        if 'translatable' in attrib:
-            if attrib[attrib.index('translatable')+1] == 'yes':
-                self._translate = True
-                if 'comments' in attrib:
-                    self._comments.append(attrib[attrib.index('comments')+1])
-
-    def _handle_end(self, tag):
-        if self._translate is True:
-            if self._data:
-                self._enqueue(tag, self._data, self._comments)
-            self._translate = False
-            self._data = []
-            self._comments = []
-
-    def _handle_data(self, text):
-        if self._translate:
-            if not text.startswith('gtk-'):
-                self._data.append(text)
-            else:
-                self._translate = False
-                self._data = []
-                self._comments = []
-
-    def _enqueue(self, kind, data=None, comments=None, pos=None):
-        if pos is None:
-            pos = self._getpos()
-
-        if '\n' in data:
-            lines = data.splitlines()
-            lineno = pos[0] - len(lines) + 1
-            offset = -1
-        else:
-            lineno = pos[0]
-            offset = pos[1] - len(data)
-        pos = (lineno, offset)
-        self._queue.append((data, comments, pos[0]))
-
-    def _getpos(self):
-        return (self.expat.CurrentLineNumber,
-                self.expat.CurrentColumnNumber)
-    def _getpos_unknown(self):
-        return (-1, -1)
+from lxml import etree
 
 
 def extract_glade(fileobj, keywords, comment_tags, options):
-    parser = GladeParser(fileobj)
-    for message, comments, lineno in parser.parse():
-        yield (lineno, None, message, comment_tags and comments or [])
+    tree = etree.parse(fileobj)
+    root = tree.getroot()
+    to_translate = []
+    for elem in root.iter():
+        # do we need to check if the element starts with "gtk-"?
+        if elem.get("translatable") == "yes":
+            line_no = elem.sourceline
+            func_name = None
+            message = elem.text
+            comment = []
+            if elem.get("comments"):
+                comment = [elem.get("comments")]
+            to_translate.append([line_no, func_name, message, comment])
+    return to_translate
