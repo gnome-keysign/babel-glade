@@ -32,6 +32,7 @@ setup(
     entry_points = """
     [babel.extractors]
     glade = babelglade.extract:extract_glade
+    desktop = babelglade.extract:extract_desktop
 
     [distutils.commands]
     compile_catalog = babel.messages.frontend:compile_catalog
