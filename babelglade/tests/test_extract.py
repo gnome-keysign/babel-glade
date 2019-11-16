@@ -14,10 +14,13 @@
 # =============================================================================
 
 import unittest
-from StringIO import StringIO
-from babel.messages.extract import DEFAULT_KEYWORDS
+try:
+    from StringIO import StringIO ## for Python 2
+except ImportError:
+    from io import StringIO ## for Python 3from babel.messages.extract import DEFAULT_KEYWORDS
 from babelglade.extract import extract_glade
 
+DEFAULT_KEYWORDS = ""
 
 class GladeExtractTests(unittest.TestCase):
 
