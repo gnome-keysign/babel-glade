@@ -14,8 +14,9 @@
 # =============================================================================
 from __future__ import unicode_literals
 
-from lxml import etree
+import sys
 
+import xml.etree.ElementTree as etree
 
 def extract_glade(fileobj, keywords, comment_tags, options):
     tree = etree.parse(fileobj)
@@ -24,7 +25,7 @@ def extract_glade(fileobj, keywords, comment_tags, options):
     for elem in root.iter():
         # do we need to check if the element starts with "gtk-"?
         if elem.get("translatable") == "yes":
-            line_no = elem.sourceline
+            line_no = 0
             func_name = None
             message = elem.text
             comment = []
