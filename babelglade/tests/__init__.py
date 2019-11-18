@@ -17,9 +17,9 @@
 import unittest
 
 def suite():
-    from babelglade.tests import extract
+    from babelglade.tests import test_extract
     suite = unittest.TestSuite()
-    suite.addTest(extract.suite())
+    suite.addTest(test_extract.suite())
     return suite
 
 if __name__ == '__main__':

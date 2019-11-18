@@ -18,7 +18,7 @@ from setuptools import setup
 
 setup(
     name    = 'BabelGladeExtractor',
-    version = '0.5.1',
+    version = '0.6.0',
     license = 'BSD',
     author  = 'Pedro Algarvio',
     author_email = 'ufs@ufsoft.org',
@@ -27,7 +27,7 @@ setup(
     description = 'Babel Glade XML files translatable strings extractor',
     url = 'https://github.com/GNOME-Keysign/babel-glade',
     keywords = ['PyGTK', 'Glade', 'gettext', 'Babel', 'I18n', 'L10n'],
-    install_requires = ['Babel', 'lxml'],
+    install_requires = ['Babel'],
     test_suite = "babelglade.tests.suite",
     entry_points = """
     [babel.extractors]
