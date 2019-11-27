@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2019 Tobias Mueller <tobiasmue@gnome.org> -->
+<component type="desktop">
+  <id>babelglade.test</id>
+  
+  <description>
+    <p translatable="yes">This should be translated.</p>
+    <p translatable="yes">
+      Multi line
+      text.
+    </p>
+  </description>
+</component>

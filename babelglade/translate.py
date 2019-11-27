@@ -2,7 +2,7 @@ import codecs
 import logging
 
 import os
-from lxml import etree
+import xml.etree.ElementTree as etree
 
 from babel.messages.pofile import read_po
 
@@ -51,18 +51,22 @@ def translate_desktop_file(infile, outfile, localedir):
 
 def translate_appdata_file(infile, outfile, localedir):
     catalogs = get_catalogs(localedir)
-    parser = etree.XMLParser(remove_blank_text=True)
-    tree = etree.parse(infile, parser)
+    tree = etree.parse(infile)
     root = tree.getroot()
-    for elem in root.iter():
-        # We remove any possible tailing whitespaces to allow lxml to format the output
-        elem.tail = None
+    add_translations(root, catalogs)
+    tree.write(outfile, encoding='utf-8', xml_declaration=True)
+
+
+def add_translations(parent, catalogs):
+    tail = parent.text
+    last_tail = None
+    for pos, elem in enumerate(parent, start=1):
         if elem.get("translatable") == "yes":
             elem.attrib.pop("translatable", None)
             elem.attrib.pop("comments", None)  # Are comments allowed?
+            last_tail = elem.tail
+            elem.tail = tail
             message = elem.text
-            parent = elem.getparent()
-            pos = parent.getchildren().index(elem) + 1
             for locale, catalog in catalogs.items():
                 translated = catalog.get(message)
                 if translated and translated.string \
@@ -73,9 +77,12 @@ def translate_appdata_file(infile, outfile, localedir):
                     attrib = tr.attrib
                     attrib["{http://www.w3.org/XML/1998/namespace}lang"] = str(locale)
                     tr.text = translated.string
+                    tr.tail = tail
                     parent.insert(pos, tr)
-    tree.write(outfile, encoding='utf-8', xml_declaration=True, pretty_print=True)
-
+        else:
+            add_translations(elem, catalogs)
+    if last_tail:
+        parent[-1].tail = last_tail
 
 def get_catalogs(localedir):
     # glob in Python 3.5 takes ** syntax

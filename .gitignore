@@ -1,2 +1,4 @@
 BabelGladeExtractor.egg-info/
 __pycache__/
+test.appdata.xml
+test.desktop
