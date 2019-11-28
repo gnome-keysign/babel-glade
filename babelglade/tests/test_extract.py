@@ -69,9 +69,3 @@ class GladeExtractTests(unittest.TestCase):
         extracted = extract_glade(self.glade_fileobj, DEFAULT_KEYWORDS, False, {})
         for entry in list(extracted):
             assert len(entry) == 4, "extract_galde did not return a 4 tupple item"
-
-
-def suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(GladeExtractTests))
-    return suite
