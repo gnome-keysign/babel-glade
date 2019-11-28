@@ -48,6 +48,9 @@ def translate_desktop_file(infile, outfile, localedir):
         # First the original line found it in the file, then the translations.
         outfp.writelines((outline+'\n' for outline in ([line] + additional_lines)))
 
+    infp.close()
+    outfp.close()
+
 
 def translate_appdata_file(infile, outfile, localedir):
     catalogs = get_catalogs(localedir)
@@ -94,7 +97,8 @@ def get_catalogs(localedir):
     catalogs = {}
 
     for pofile in pofiles:
-        catalog = read_po(open(pofile, 'r'))
+        with open(pofile, 'r') as f:
+            catalog = read_po(f)
         catalogs[catalog.locale] = catalog
         logging.info("Found %d strings for %s", len(catalog), catalog.locale)
         # logging.debug("Strings for %r", catalog, catalog.values())
