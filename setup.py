@@ -18,7 +18,7 @@ from setuptools import setup
 
 setup(
     name    = 'BabelGladeExtractor',
-    version = '0.6.1',
+    version = '0.6.2',
     license = 'BSD',
     author  = 'Pedro Algarvio',
     author_email = 'ufs@ufsoft.org',
