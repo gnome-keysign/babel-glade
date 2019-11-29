@@ -17,9 +17,10 @@
 import unittest
 
 def suite():
-    from babelglade.tests import test_extract
+    from babelglade.tests import test_extract, test_translate
     suite = unittest.TestSuite()
-    suite.addTest(test_extract.suite())
+    suite.addTest(unittest.makeSuite(test_extract.GladeExtractTests))
+    suite.addTest(unittest.makeSuite(test_translate.TranslateTestCase))
     return suite
 
 if __name__ == '__main__':
