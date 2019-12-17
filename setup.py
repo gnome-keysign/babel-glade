@@ -37,6 +37,6 @@ setup(
     [distutils.commands]
     compile_catalog = babel.messages.frontend:compile_catalog
     """,
-    packages = ['babelglade', 'babelglade.tests']
-
+    packages = ['babelglade', 'babelglade.tests'],
+    include_package_data=True
 )
