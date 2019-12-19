@@ -1,1 +1,2 @@
 include babelglade/tests/test.raw.*
+recursive-include babelglade/tests/locale *
