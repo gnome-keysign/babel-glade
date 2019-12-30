@@ -47,7 +47,7 @@ for routine i18n lifecycle tasks.
 
 """,
     url = 'https://github.com/GNOME-Keysign/babel-glade',
-    keywords = ['PyGTK', 'PyGObject', 'Glade', '', 'gettext', 'Babel', 'I18n', 'L10n'],
+    keywords = ['PyGTK', 'PyGObject', 'Glade', 'GtkBuilder', 'gettext', 'Babel', 'I18n', 'L10n'],
     install_requires = ['Babel'],
     test_suite = "babelglade.tests.suite",
     entry_points = """
