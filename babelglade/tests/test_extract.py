@@ -13,59 +13,54 @@
 # Please view LICENSE for additional licensing information.
 # =============================================================================
 
+import os
 import unittest
-try:
-    from StringIO import StringIO ## for Python 2
-except ImportError:
-    from io import StringIO ## for Python 3from babel.messages.extract import DEFAULT_KEYWORDS
 from babelglade.extract import extract_glade
+# from babel.messages.extract import DEFAULT_KEYWORDS
 
-DEFAULT_KEYWORDS = ""
+DEFAULT_KEYWORDS = ("gettext", "pgettext")
+GLADE2_FILE = "test_extract.glade2.xml"
+GTKBUILDER_FILE = "test_extract.gtkbuilder.xml"
+
+
+def relative(test_file):
+    return os.path.join(os.path.dirname(__file__), test_file)
+
 
 class GladeExtractTests(unittest.TestCase):
 
-    def setUp(self):
-        self.glade_fileobj = StringIO("""\
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<glade-interface>
-  <widget class="GtkWindow" id="window1">
-    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-    <child>
-      <widget class="GtkVBox" id="vbox1">
-        <property name="visible">True</property>
-        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-        <child>
-          <widget class="GtkLabel" id="label1">
-            <property name="visible">True</property>
-            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-            <property name="label" translatable="yes" comments="A label with translator comments">This is a Label</property>
-          </widget>
-        </child>
-        <child>
-          <widget class="GtkButton" id="button1">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-            <property name="label" translatable="yes" comments="This button also includes translator comments">A button</property>
-          </widget>
-          <packing>
-            <property name="position">1</property>
-          </packing>
-        </child>
-      </widget>
-    </child>
-  </widget>
-</glade-interface>
-""")
+    def test_glade2_yield_four_item_tuples_with_keywords(self):
+        with open(relative(GLADE2_FILE), "r") as fp:
+            extracted = extract_glade(fp, DEFAULT_KEYWORDS, None, {})
+            extracted = list(extracted)
+        assert len(extracted) > 0, "extract_glade is not respecting presence of keywords"
+        for entry in extracted:
+            assert len(entry) == 4, "extract_glade did not return a tuple of length 4"
 
-    def test_yield_four_item_tuples_with_comments(self):
-        extracted = extract_glade(self.glade_fileobj, DEFAULT_KEYWORDS, True, {})
-        for entry in list(extracted):
-            assert len(entry) == 4, "extract_galde did not return a 4 tupple item"
+    def test_glade2_yield_no_tuples_without_keywords(self):
+        with open(relative(GLADE2_FILE), "r") as fp:
+            extracted = extract_glade(fp, (), None, {})
+            extracted = list(extracted)
+        assert len(extracted) == 0, "extract_glade is not respecting absence of keywords"
 
-    def test_yield_four_item_tuples_without_comments(self):
-        extracted = extract_glade(self.glade_fileobj, DEFAULT_KEYWORDS, False, {})
-        for entry in list(extracted):
-            assert len(entry) == 4, "extract_galde did not return a 4 tupple item"
+    def test_gtkbuilder_yield_pgettext_tuples_for_elems_with_context(self):
+        with open(relative(GTKBUILDER_FILE), "r") as fp:
+            extracted = extract_glade(fp, ["pgettext"], None, {})
+            extracted = list(extracted)
+        assert len(extracted) == 2, "extract_glade is not handling elems with context like pgettext"
+        for entry in extracted:
+            assert len(entry) == 4, "extract_glade did not return a tuple of length 4"
+            lineno, funcname, message, comments = entry
+            assert funcname == "pgettext", "extract_glade is not returning the right funcname (pgettext) for elems with context"
+            assert isinstance(message, tuple) or isinstance(message, list), "extract_glade is not returning a tuple or a list when pretending it extracted from pgettext()"
+            assert len(message) == 2, "extract_glade is not returning (ctx, msg) when pretending it extracted from pgettext()"
+
+    def test_gtkbuilder_yield_gettext_tuples_for_elems_without_context(self):
+        with open(relative(GTKBUILDER_FILE), "r") as fp:
+            extracted = extract_glade(fp, ["gettext"], None, {})
+            extracted = list(extracted)
+        assert len(extracted) == 1, "extract_glade is not handling elems without context like gettext"
+        for entry in extracted:
+            assert len(entry) == 4, "extract_glade did not return a tuple of length 4"
+            lineno, funcname, message, comments = entry
+            assert funcname == "gettext", "extract_glade is not returning the right funcname (gettext) for elems without any context"

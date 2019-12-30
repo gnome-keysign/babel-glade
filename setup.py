@@ -24,9 +24,30 @@ setup(
     author_email = 'ufs@ufsoft.org',
     maintainer = 'Tobias Mueller',
     maintainer_email = 'tobiasmue@gnome.org',
-    description = 'Babel Glade XML files translatable strings extractor',
+    description = 'Babel l10n support for Glade, GtkBuilder, and .desktop files',
+    long_description = """
+This package contains message catalog extractors for the following
+formats, extending Babel_ so it can handle them.
+
+    * The older "Glade v2" XML format;
+    * The new GtkBuilder-compatible "UI Definition XML" format used by
+      Glade_ 3.8 and above;
+    * The AppData XML dialect, because it's similar;
+    * FreeDesktop.org ".desktop" files.
+
+To make these formats translatable, install this package. Then in your
+own projects map some source and data files to the simple extractor
+names "glade" and "desktop" that are provided by this package. You can
+then use Babel's setuptools integration or its command line interface
+for routine i18n lifecycle tasks.
+
+.. _Babel: http://babel.pocoo.org/en/latest/index.html
+.. _Glade: https://glade.gnome.org/
+
+
+""",
     url = 'https://github.com/GNOME-Keysign/babel-glade',
-    keywords = ['PyGTK', 'Glade', 'gettext', 'Babel', 'I18n', 'L10n'],
+    keywords = ['PyGTK', 'PyGObject', 'Glade', '', 'gettext', 'Babel', 'I18n', 'L10n'],
     install_requires = ['Babel'],
     test_suite = "babelglade.tests.suite",
     entry_points = """
