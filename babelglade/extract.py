@@ -30,15 +30,17 @@ def extract_glade(fileobj, keywords, comment_tags, options):
         tuples whose interpretation depends on ``funcname``.
     :rtype: iterator
 
-    Properties must be marked translatable="yes". Context and comments
-    attributes are respected. The yielded tuples are and returned as if
-    you used gettext() or pgettext() in C or Python code. In other
-    words, "gettext" or "pgettext" must be listed in ``keywords`` for
-    contextless or context-bearing strings to be translated. The
-    shorthand "_" and "C_" aliases from g18n.h are valid keywords too.
+    Properties must be marked translatable="yes". The "context" and
+    "comments" attributes are respected. The yielded tuples are returned
+    as if you used ``gettext()`` or ``pgettext()`` in C or Python code.
+    This means that translatable XML strings with contexts are are only
+    extracted if the string ``"pgettext"`` is present in ``keywords``,
+    and XML strings without context are only extracted if ``"gettext"``
+    is present. The shorthand ``_`` and ``C_`` aliases from ``g18n.h``
+    are valid ``keywords`` too.
 
-    Babel defaults to having "gettext" and "pgettext" in ``keywords``,
-    so you don't normally need to worry about this.
+    By default, Babel passes both these function names in ``keywords``,
+    amongst others, so you don't normally need to worry about this.
 
     See also:
 
