@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "BabelGladeExtractor"
+version = "0.7.1"
+description = "Babel l10n support for Glade, GtkBuilder, and .desktop files"
+readme = "README.md"
+license = {text = "BSD"}
+authors = [
+    {name = "Pedro Algarvio", email = "ufs@ufsoft.org"}
+]
+maintainers = [
+    {name = "Tobias Mueller", email = "tobiasmue@gnome.org"}
+]
+keywords = [
+    "PyGTK",
+    "PyGObject",
+    "Glade",
+    "GtkBuilder",
+    "gettext",
+    "Babel",
+    "I18n",
+    "L10n"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Internationalization",
+    "Topic :: Software Development :: Localization"
+]
+requires-python = ">=3.7"
+dependencies = [
+    "Babel"
+]
+
+[project.urls]
+Homepage = "https://github.com/GNOME-Keysign/babel-glade"
+Repository = "https://github.com/GNOME-Keysign/babel-glade"
+
+[project.entry-points."babel.extractors"]
+glade = "babelglade.extract:extract_glade"
+desktop = "babelglade.extract:extract_desktop"
+
+[project.entry-points."distutils.commands"]
+compile_catalog = "babel.messages.frontend:compile_catalog"
+
+[tool.setuptools]
+packages = ["babelglade", "babelglade.tests"]
+include-package-data = true
