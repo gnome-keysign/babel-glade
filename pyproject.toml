@@ -3,8 +3,8 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "BabelGladeExtractor"
-version = "0.7.1"
+name = "babelgladeextractor"
+version = "0.7.2"
 description = "Babel l10n support for Glade, GtkBuilder, and .desktop files"
 readme = "README.md"
 license = {text = "BSD"}
